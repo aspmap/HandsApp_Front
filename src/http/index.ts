@@ -3,7 +3,7 @@ import {AuthResponse} from "../models/response/AuthResponse";
 import {store} from "../index";
 import {IUser} from "../models/IUser";
 
-export const API_URL = `http://localhost:8080`
+export const API_URL = `http://localhost:8081`
 
 const $api = axios.create({
     withCredentials: true,
@@ -11,13 +11,7 @@ const $api = axios.create({
 })
 
 $api.interceptors.request.use((config) => {
-    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
-    //config.headers.Authorization = 'Bearer ' + localStorage.getItem('token')
-    console.log('Bearer: ' + config.headers.Authorization)
-    console.log('data: ' + config.data)
-    console.log(config.headers)
-    console.log(config.auth)
-
+    config.headers.Authorization = 'Basic ' + localStorage.getItem('basic');
     return config;
 })
 
@@ -29,7 +23,7 @@ $api.interceptors.response.use((config) => {
         originalRequest._isRetry = true;
         try {
             const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {withCredentials: true})
-            localStorage.setItem('token', response.data.accessToken);
+            localStorage.setItem('basic', response.data.accessToken);
             return $api.request(originalRequest);
         } catch (e) {
             console.log('НЕ АВТОРИЗОВАН')

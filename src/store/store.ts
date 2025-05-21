@@ -26,12 +26,9 @@ export default class Store {
         this.isLoading = bool;
     }
 
-    async login(email: string, password: string) {
+    async login(username: string, password: string) {
         try {
-            console.log('response1 ')
-            const response = await AuthService.login(email, password);
-            console.log('response2 ' + response)
-            localStorage.setItem('token', response.data.accessToken);
+            const response = await AuthService.login(username, password);
             this.setAuth(true);
             this.setUser(response.data.user);
         } catch (e) {
@@ -42,7 +39,7 @@ export default class Store {
     async registration(username: string, password: string) {
         try {
             const response = await AuthService.registration(username, password);
-            localStorage.setItem('token', response.data.accessToken);
+            localStorage.setItem('basic', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
         } catch (e) {
@@ -53,7 +50,7 @@ export default class Store {
     async logout() {
         try {
             const response = await AuthService.logout();
-            localStorage.removeItem('token');
+            localStorage.removeItem('basic');
             this.setAuth(false);
             this.setUser({} as IUser);
         } catch (e) {
@@ -65,7 +62,7 @@ export default class Store {
         this.setLoading(true);
         try {
             const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {withCredentials: true})
-            localStorage.setItem('token', response.data.accessToken);
+            localStorage.setItem('basic', response.data.accessToken);
             this.setAuth(true);
             this.setUser(response.data.user);
         } catch (e) {

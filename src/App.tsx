@@ -10,8 +10,7 @@ const App: FC = () => {
     const [users, setUsers] = useState<IUser[]>([]);
 
     useEffect(() => {
-        if (localStorage.getItem('token')) {
-            console.log(store.user.username)
+        if (localStorage.getItem('basic')) {
             store.checkAuth()
         }
     }, [])
@@ -20,8 +19,6 @@ const App: FC = () => {
         try {
             const response = await UserService.fetchUsers();
             setUsers(response.data);
-            console.log(store.user.username)
-            console.log(response.data)
         } catch (e) {
             console.log(e);
         }
@@ -35,22 +32,46 @@ const App: FC = () => {
         return (
             <div>
                 <LoginForm/>
-                <button onClick={getUsers}>Получить пользователей</button>
+                <button onClick={getUsers}>Посмотреть посты</button>
             </div>
         );
     }
 
     return (
-        <div>
-           {/* <h1>{store.isAuth ? `Пользователь авторизован ${store.user.username}` : 'АВТОРИЗУЙТЕСЬ'}</h1>
+        <div>{/* <h1>{store.isAuth ? `Пользователь авторизован ${store.user.username}` : 'АВТОРИЗУЙТЕСЬ'}</h1>
             <h1>{store.user.isActivated ? 'Аккаунт подтвержден по почте' : 'ПОДТВЕРДИТЕ АККАУНТ!!!!'}</h1>*/}
             <button onClick={() => store.logout()}>Выйти</button>
             <div>
-                <button onClick={getUsers}>Получить пользователей</button>
+                <button onClick={getUsers}>Посмотреть посты</button>
             </div>
-          {/*  {users.map(user =>
-                <div key={user.username}>{user.username}</div>
-            )}*/}
+            <div>
+                <h1>Посты:</h1>
+                <table>
+                    <tr>
+                        <th>ID поста</th>
+                        <th>Текст</th>
+                        <th>Фото</th>
+                        <th>Дата поста</th>
+                    </tr>
+                    <tr>
+                        <td>{users.map(user =>
+                            <div key={user.postId}> {user.postId}</div>)}</td>
+                        <td>{users.map(user =>
+                            <div key={user.content}> {user.content}</div>)}</td>
+                        <td>
+                            {users.map(user =>
+                                <div key={user.photo}> {user.photo}</div>)}
+                            {/*{users.map(user => { return <img src= {user.photo} />})};*/}
+                            {/*{users.map(user => {
+                            return <div><img width="200px" height="200px"
+                                        src={'https://localhost:8443/resources/img/users/' + localStorage.getItem("username") + '/' + user.photo}/></div>
+                        })};*/}
+                        </td>
+                        <td>{users.map(user =>
+                            <div key={user.createdAt}> {user.createdAt}</div>)}</td>
+                    </tr>
+                </table>
+            </div>
         </div>
     );
 };

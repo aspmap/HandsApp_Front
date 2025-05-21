@@ -4,8 +4,10 @@ import {AuthResponse} from "../models/response/AuthResponse";
 
 export default class AuthService {
     static async login(username: string, password: string): Promise<AxiosResponse<AuthResponse>> {
-        console.log('response3 ' )
-        return $api.post<AuthResponse>('/token', 'username=' + username + '&password=' + password);
+        var base64 = btoa(username + ':' +  password)
+        localStorage.setItem('basic', base64);
+        localStorage.setItem("username", username);
+        return $api.post<AuthResponse>('/token', {username, password})
     }
 
     static async registration(username: string, password: string): Promise<AxiosResponse<AuthResponse>> {
